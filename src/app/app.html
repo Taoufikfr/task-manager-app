@@ -1,1 +1,47 @@
-<router-outlet></router-outlet>
+<div class="container">
+  <h1>🚀 Task Manager</h1>
+
+  <div class="filter-bar">
+    <button [class.active]="currentFilter === 'All'" (click)="setFilter('All')">All</button>
+    <button [class.active]="currentFilter === 'Daily'" (click)="setFilter('Daily')">Daily</button>
+    <button [class.active]="currentFilter === 'Weekly'" (click)="setFilter('Weekly')">Weekly</button>
+    <button [class.active]="currentFilter === 'Other'" (click)="setFilter('Other')">Other</button>
+  </div>
+
+  <div class="input-group">
+    <input [(ngModel)]="newTask" placeholder="Add a new task..." />
+    <select [(ngModel)]="newCategory">
+      <option value="Daily">Daily</option>
+      <option value="Weekly">Weekly</option>
+      <option value="Other">Other</option>
+    </select>
+    <button class="add-btn" (click)="addTask()">+ Add</button>
+  </div>
+
+  <ul>
+    <li *ngFor="let task of filteredTasks" class="task-item">
+      
+      <div class="task-left">
+        <span class="tag category" [ngClass]="task.category">{{ task.category }}</span>
+        
+        <span class="task-title">{{ task.title }}</span>
+      </div>
+
+      <div class="task-right">
+        <select 
+          [ngModel]="task.status" 
+          (ngModelChange)="updateStatus(task, $event)"
+          class="status-select"
+          [ngClass]="task.status?.replace(' ', '-')"> <option value="New">New</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
+        </select>
+
+        <button class="delete-icon" (click)="deleteTask(task.id!)">🗑️</button>
+      </div>
+
+    </li>
+  </ul>
+  
+  <p *ngIf="filteredTasks.length === 0" class="empty-msg">No tasks found in this category.</p>
+</div>
