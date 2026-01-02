@@ -1,0 +1,56 @@
+<div class="container">
+  
+  <div class="header">
+    <h1>My Dashboard</h1>
+
+    <div class="add-task-box">
+      <input #taskInput 
+             type="text" 
+             placeholder="What needs to be done?" 
+             (keyup.enter)="addTask(taskInput.value); taskInput.value=''">
+      
+      <button (click)="addTask(taskInput.value); taskInput.value=''">
+        + Add Task
+      </button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button (click)="loadView('daily')" [class.active]="activeView === 'daily'">
+      Today
+    </button>
+    <button (click)="loadView('weekly')" [class.active]="activeView === 'weekly'">
+      This Week
+    </button>
+  </div>
+
+  <div class="task-list">
+    <ng-container *ngIf="tasks$ | async as tasks; else loading">
+      
+      <div *ngFor="let task of tasks" class="task-card" [class.pinned]="task.isPinned">
+        
+        <div class="task-info">
+          <h3>{{ task.title }}</h3>
+          <span class="date">
+              {{ $any(task.dueDate)?.seconds * 1000 | date:'mediumDate' }}         
+             </span>
+        </div>
+
+        <button class="pin-btn" (click)="togglePin(task)">
+          {{ task.isPinned ? '📌 Unpin' : '📍 Pin' }}
+        </button>
+      
+      </div>
+
+      <div *ngIf="tasks.length === 0" class="empty-state">
+        <p>No tasks found for this period. Time to relax! 🎉</p>
+      </div>
+
+    </ng-container>
+
+    <ng-template #loading>
+      <div class="loading">Loading tasks...</div>
+    </ng-template>
+  </div>
+
+</div>
